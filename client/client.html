@@ -29,12 +29,13 @@
         case 400:
           content.innerHTML = '<b>Bad Request</b>';
           break;
+        case 404:
+          content.innerHTML = '<b>404 Not Found</b>';
+          break;
         default:
           content.innerHTML = '<b>Response Code Not implemented by Client</b>';
           break;
       }
-      
-      console.dir(JSON.parse(xhr.response));
     };
 
     const sendPost = (e, nameForm) => {
@@ -59,24 +60,27 @@
     };
 
     const getUsers = (e, methodSelect) => {
-      console.dir("get users");
+      const urlForm = document.querySelector('#urlField');
+      // console.dir(urlForm.value);
       const xhr = new XMLHttpRequest();
-      const url = userForm.getAttribute('action');
+      // const url = userForm.getAttribute('action');
+      const url = urlForm.value;
       const method = methodSelect.value;
       
       xhr.open(method, url);
       
       xhr.onload = () => {
-        console.dir(JSON.stringify(xhr.response));
+        console.dir("xhr onload");
+        handleResponse(xhr);
         switch(xhr.status) {
           case 200:
             content.innerHTML = '<b>Users:<br>';
-            content.innerHTML = `${content.innerHTML}${JSON.stringify(xhr.response)}`;
+            content.innerHTML = `${content.innerHTML}${xhr.response}`;
             break;
         }
       };
       xhr.send();
-      
+      console.dir("end");
       e.preventDefault();
       return false;
     };
@@ -87,10 +91,10 @@
       const methodSelect = document.querySelector('#methodSelect');
       
       const addUser = (e) => sendPost(e, nameForm);
-      const getUsers = (e) => getUsers(e, methodSelect);
+      const findUsers = (e) => getUsers(e, methodSelect);
       
       nameForm.addEventListener('submit', addUser);
-      userForm.addEventListener('submit', getUsers);
+      userForm.addEventListener('submit', findUsers);
     };
 
     window.onload = init;
