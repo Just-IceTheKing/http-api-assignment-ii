@@ -8,7 +8,7 @@
   <script type="text/babel">
     const parseJSON = (xhr, content) => {
       if(xhr.response) {
-        const obj = JSON.parse(xhr.response);
+        //const obj = JSON.parse(xhr.response);
         console.dir(obj);
       }
     };
@@ -16,21 +16,39 @@
     const handleResponse = (xhr) => {
       const content = document.querySelector('#content');
       
+      let jsonResponse = 'No Response';
+      
+      if(xhr.response) {
+        jsonResponse = JSON.parse(xhr.response);
+      }
+      
       switch(xhr.status) {
         case 200:
           content.innerHTML = '<b>Success</b>';
+          console.dir(jsonResponse);
           break;
         case 201:
           content.innerHTML = '<b>Created</b>';
+          console.dir(jsonResponse);
           break;
         case 204:
-          content.innerHTML = '<b>Updated</b>';
+          content.innerHTML = '<b>Updated (No Content)</b>';
+          console.dir(jsonResponse);
           break;
         case 400:
           content.innerHTML = '<b>Bad Request</b>';
+          content.innerHTML = `${content.innerHTML}<br>Message: ${jsonResponse.message}`;
+          console.dir(jsonResponse);
           break;
         case 404:
           content.innerHTML = '<b>404 Not Found</b>';
+          
+          // no response if it is a HEAD request
+          if(jsonResponse.message) {
+            content.innerHTML = `${content.innerHTML}<br>Message: ${jsonResponse.message}`;
+          }
+          
+          console.dir(jsonResponse);
           break;
         default:
           content.innerHTML = '<b>Response Code Not implemented by Client</b>';
@@ -70,17 +88,18 @@
       xhr.open(method, url);
       
       xhr.onload = () => {
-        console.dir("xhr onload");
         handleResponse(xhr);
         switch(xhr.status) {
           case 200:
-            content.innerHTML = '<b>Users:<br>';
-            content.innerHTML = `${content.innerHTML}${xhr.response}`;
+            content.innerHTML = '<b>Success<br>';
+            if(xhr.response) {
+              content.innerHTML = `${content.innerHTML}${xhr.response}`;
+              //console.dir(JSON.parse(xhr.response));
+            }
             break;
         }
       };
       xhr.send();
-      console.dir("end");
       e.preventDefault();
       return false;
     };

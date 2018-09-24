@@ -31,7 +31,6 @@ const handlePost = (request, response, parsedUrl) => {
 };
 
 const handleGet = (request, response, parsedUrl) => {
-  // console.dir("get");
   if (parsedUrl.pathname === '/style.css') {
     htmlHandler.getCSS(request, response);
   } else if (parsedUrl.pathname === '/getUsers') {
@@ -44,11 +43,12 @@ const handleGet = (request, response, parsedUrl) => {
 };
 
 const handleHead = (request, response, parsedUrl) => {
-  // console.dir("head");
   if (parsedUrl.pathname === '/getUsers') {
     //
+    jsonHandler.getUsersMeta(request, response);
   } else {
     // not real. Give a 404
+    jsonHandler.notFoundMeta(request, response);
   }
 };
 
